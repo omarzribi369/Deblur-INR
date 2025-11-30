@@ -35,7 +35,7 @@ parser.add_argument('--save_path', type=str, default="./results/", help='path to
 parser.add_argument('--save_frequency', type=int, default=100, help='lfrequency to save results')
 opt = parser.parse_args()
 
-torch.cuda.set_device(1)
+torch.cuda.set_device(0)
 torch.set_num_threads(3)
 torch.backends.cudnn.enabled = True
 torch.backends.cudnn.benchmark = True
