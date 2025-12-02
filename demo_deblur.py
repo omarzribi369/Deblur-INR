@@ -26,13 +26,14 @@ def natural_keys(text):
     return [atoi(c) for c in re.split(r'(\d+)' ,text)]
 parser = argparse.ArgumentParser()
 parser.add_argument('--num_iter', type=int, default=5000, help='number of epochs of training')
-parser.add_argument('--kernel_size', type=int, default=[79, 79], help='size of blur kernel [height, width]')
+parser.add_argument('--kernel_size', type=int, nargs=2, default=[79, 79], help='size of blur kernel [height, width]')
 parser.add_argument('--img_size', type=int, default=[256, 256], help='size of each image dimension')
 parser.add_argument('--img_size1', type=int, default=[630, 518], help='size of each image dimension')
 parser.add_argument('--img_size2', type=int, default=[630, 518], help='size of each image dimension')
 parser.add_argument('--data_path', type=str, default="./datasets/lai", help='path to blurry image')
 parser.add_argument('--save_path', type=str, default="./results/", help='path to save results')
 parser.add_argument('--save_frequency', type=int, default=100, help='lfrequency to save results')
+parser.add_argument('--custom_resolution', type=int, nargs=2, default=None, help='custom resolution [height, width]')
 opt = parser.parse_args()
 
 torch.cuda.set_device(0)
@@ -134,6 +135,8 @@ for f in files_source:
     if imgname.find('kernel_04') != -1:
         opt.kernel_size = [75, 75]
     _, imgs = get_image(path_to_image, -1)  # load image and convert to np.
+    
+   
     y_color = np_to_torch(imgs).type(dtype)
 
     img_gray = readimg_gray(path_to_image)
