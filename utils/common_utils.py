@@ -105,20 +105,21 @@ def get_image(path, imsize=-1):
         imsize: tuple or scalar with dimensions; -1 for `no resize`
     """
     img = load(path)
-    # if img.mode != 'RGB':
-    #     img = img.convert('RGB')
+    if img.mode != 'RGB':
+         img = img.convert('RGB')
 
     if isinstance(imsize, int):
         imsize = (imsize, imsize)
 
     img_np = pil_to_np(img)
-    array = np.transpose(img_np, (1, 2, 0))  # 从 (3, 276, 278) 到 (276, 278, 3)
-
-    # 调整大小
-    resized_array = cv2.resize(array, (256, 256), interpolation=cv2.INTER_CUBIC)
-
-    # 交换轴回到原始顺序
-    resized_array = np.transpose(resized_array, (2, 0, 1))  # 从 (256, 256, 3) 到 (3, 256, 256)
+    if len(img_np.shape) == 3:
+        array = np.transpose(img_np, (1, 2, 0))  # 从 (3, 276, 278) 到 (276, 278, 3)
+        resized_array = cv2.resize(array, (256, 256), interpolation=cv2.INTER_CUBIC)
+        resized_array = np.transpose(resized_array, (2, 0, 1))  # 从 (256, 256, 3) 到 (3, 256, 256)
+    else:
+        # Grayscale image
+        resized_array = cv2.resize(img_np[0], (256, 256), interpolation=cv2.INTER_CUBIC)
+        resized_array = resized_array[None, ...]  # Add channel dimension
 
     return img, img_np
 
